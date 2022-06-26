@@ -11,13 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Biblioteca",
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Biblioteca(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: "Biblioteca",
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const Biblioteca());
   }
 }
 
@@ -38,7 +37,6 @@ class Biblioteca extends StatelessWidget {
 
 class InicioEstadoBiblioteca extends StatefulWidget {
   const InicioEstadoBiblioteca({Key? key}) : super(key: key);
-
   @override
   AdicionarLivro createState() => AdicionarLivro();
 }
@@ -147,13 +145,17 @@ class FormCadastroLivro extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Livro gravado com sucesso!"),
+                          duration: Duration(
+                              seconds: 2), //tempo de duracao do snackBar
                           backgroundColor: Colors.green,
                         ),
                       );
+                      //limpa os campos
                       _nomeCtrl.clear();
                       _isbnCtrl.clear();
                       _opiniaoCtrl.clear();
                       _anoCtrl.clear();
+                      exibirMensagemConfirmacao(context);
                     }
                   },
                   child: const Text("Registrar livro"),
@@ -176,4 +178,35 @@ class FormCadastroLivro extends StatelessWidget {
           ),
         ));
   }
+}
+
+exibirMensagemConfirmacao(BuildContext context) {
+  Widget botarFicar = TextButton(
+    child: const Text("Desejo cadastrar outro livro."),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+  );
+  Widget botaoSair = TextButton(
+    child: const Text("Desejo sair."),
+    //retorna à pilha ao estado inicial
+    onPressed: () {
+      Navigator.pop(context);
+      Navigator.pop(context);
+    },
+  );
+  AlertDialog aviso = AlertDialog(
+    title: const Text("Oi! 👋"),
+    content: const Text("O que você deseja fazer?"),
+    actions: [
+      botarFicar,
+      botaoSair,
+    ],
+  );
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return aviso;
+    },
+  );
 }
