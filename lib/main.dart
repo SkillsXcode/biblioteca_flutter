@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: "Biblioteca",
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -44,8 +44,6 @@ class InicioEstadoBiblioteca extends StatefulWidget {
 }
 
 class AdicionarLivro extends State<InicioEstadoBiblioteca> {
-  //const AdicionarLivro({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,75 +68,112 @@ class FormCadastroLivro extends StatelessWidget {
   final TextEditingController _isbnCtrl = TextEditingController();
   final TextEditingController _opiniaoCtrl = TextEditingController();
   final TextEditingController _anoCtrl = TextEditingController();
-  bool _preenchido = GlobalKey<FormState>() as bool;
+  final _preenchido = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Cadastro de um livro"),
-        backgroundColor: Colors.purple[400],
-      ),
-      body: Column(children: [
-        TextField(
-          controller: _nomeCtrl,
-          decoration: InputDecoration(
-            hintText: "Nome do livro",
-            errorText: _preenchido ? 'Este campo não pode ser vazio!' : null,
-          ),
+        appBar: AppBar(
+          title: const Text("Cadastro de um livro"),
+          backgroundColor: Colors.purple[400],
         ),
-        TextField(
-          controller: _isbnCtrl,
-          decoration: const InputDecoration(hintText: "ISBN"),
-        ),
-        //tratamento para inserção de apenas números
-        TextField(
-          controller: _anoCtrl,
-          decoration: const InputDecoration(hintText: "Ano"),
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
-          ],
-        ),
-        TextField(
-          maxLines: 10,
-          controller: _opiniaoCtrl,
-          decoration: const InputDecoration(hintText: "Opinião"),
-        ),
-        const Spacer(), //separa o botão dos campos de texto
-        SizedBox(
-          width: 400,
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.purple[400],
+        body: Form(
+          key: _preenchido,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _nomeCtrl,
+                decoration: const InputDecoration(hintText: "Nome do livro"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Não deixe este campo vazio!";
+                  }
+                  return null;
+                },
               ),
-              onPressed: () {
-                // setState(() {
-                //   _nomeCtrl.text.isEmpty
-                //       ? _preenchido = true
-                //       : _preenchido = false;
-                // });
+              TextFormField(
+                controller: _isbnCtrl,
+                decoration: const InputDecoration(hintText: "ISBN"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Não deixe este campo vazio!";
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _anoCtrl,
+                decoration:
+                    const InputDecoration(hintText: "Ano de publicação"),
+                //permite que apenas números sejam inseridos
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Não deixe este campo vazio!";
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _opiniaoCtrl,
+                decoration: const InputDecoration(hintText: "Opiniao"),
+                maxLines: 10,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Não deixe este campo vazio!";
+                  }
+                  return null;
+                },
+              ),
+              const Spacer(),
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.orange),
+                  onPressed: () {
+                    if (_preenchido.currentState!.validate()) {
+                      final String nome = _nomeCtrl.text;
+                      final String isbn = _isbnCtrl.text;
+                      final String opiniao = _opiniaoCtrl.text;
+                      final int anoPublicacao = int.parse(_anoCtrl.text);
+                      print(LivroController.persistirTemp(
+                          nome, isbn, opiniao, anoPublicacao));
 
-                final String nome = _nomeCtrl.text;
-                final String isbn = _isbnCtrl.text;
-                final String opiniao = _opiniaoCtrl.text;
-                final int anoPublicacao = int.parse(_anoCtrl.text);
-                print(LivroController.persistirTemp(
-                    nome, isbn, opiniao, anoPublicacao));
-                //valida de o formulário está preenchido
-              },
-              child: const Text("Registrar")),
-        ),
-        SizedBox(
-          width: 400,
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Colors.orange),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Voltar")),
-        ),
-      ]),
-    );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Livro gravado com sucesso!"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      _nomeCtrl.clear();
+                      _isbnCtrl.clear();
+                      _opiniaoCtrl.clear();
+                      _anoCtrl.clear();
+                    }
+                  },
+                  child: const Text("Registrar livro"),
+                ),
+              )),
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.purple[400],
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Voltar"),
+                ),
+              )),
+            ],
+          ),
+        ));
   }
 }
