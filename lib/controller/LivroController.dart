@@ -12,5 +12,9 @@ class LivroController {
     livros.add(livro);
     return livros;
   }
+
+  static void removerLivro(int index) {
+    livros.removeAt(index);
+  }
   //criar uma lista de livros
 }

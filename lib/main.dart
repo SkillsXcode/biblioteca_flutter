@@ -66,6 +66,13 @@ class AdicionarLivro extends State<InicioEstadoBiblioteca> {
                 "\$",
                 style: TextStyle(color: Colors.green, fontSize: 15),
               ),
+              onLongPress: () {
+                LivroController.removerLivro(index);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Biblioteca()));
+              },
               title: Text(LivroController.livros.elementAt(index).nome));
         },
       ),
@@ -106,7 +113,8 @@ class FormCadastroLivro extends StatelessWidget {
             ),
             TextFormField(
               controller: _isbnCtrl,
-              decoration: const InputDecoration(hintText: "ISBN"),
+              decoration: const InputDecoration(
+                  hintText: "ISBN ou outro identificador"),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Não deixe este campo vazio!";
@@ -131,7 +139,7 @@ class FormCadastroLivro extends StatelessWidget {
             ),
             TextFormField(
               controller: _opiniaoCtrl,
-              decoration: const InputDecoration(hintText: "Opiniao"),
+              decoration: const InputDecoration(hintText: "Opinião"),
               maxLines: 10,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -152,12 +160,9 @@ class FormCadastroLivro extends StatelessWidget {
                     final String isbn = _isbnCtrl.text;
                     final String opiniao = _opiniaoCtrl.text;
                     final int anoPublicacao = int.parse(_anoCtrl.text);
-                    // print(LivroController.persistirTemp(
-                    //     nome, isbn, opiniao, anoPublicacao));
                     Livro livroTemp = LivroController.persistirTemp(
                         nome, isbn, opiniao, anoPublicacao);
                     LivroController.adicionarLivro(livroTemp);
-                    //print(LivroController.livros.getRange(0, 3));
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Livro gravado com sucesso!"),
