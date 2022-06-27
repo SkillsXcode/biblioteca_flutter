@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:trabalho/controller/LivroController.dart';
+import 'package:trabalho/model/Livro.dart';
+
+const listaCards = List<CardsLivrosState>;
 
 void main() {
   runApp(const MyApp());
@@ -28,10 +31,10 @@ class CardsLivros extends StatefulWidget {
   const CardsLivros({Key? key}) : super(key: key);
 
   @override
-  State<CardsLivros> createState() => _CardsLivrosState();
+  State<CardsLivros> createState() => CardsLivrosState();
 }
 
-class _CardsLivrosState extends State<CardsLivros> {
+class CardsLivrosState extends State<CardsLivros> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -40,7 +43,7 @@ class _CardsLivrosState extends State<CardsLivros> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             const ListTile(
-              leading: Icon(Icons.album),
+              leading: Icon(Icons.book_rounded),
               title: Text('Memórias Póstumas de Brás Cubas'),
               subtitle: Text('658021001X'),
             ),
@@ -48,8 +51,12 @@ class _CardsLivrosState extends State<CardsLivros> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
-                  child: const Text('Remover'),
-                  onPressed: () {/* ... */},
+                  child: const Text(
+                    'Remover',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {/* aciona o evento de remoção da fila */},
                 ),
                 const SizedBox(width: 8),
               ],
@@ -86,18 +93,21 @@ class AdicionarLivro extends State<InicioEstadoBiblioteca> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => FormCadastroLivro()),
-          );
-        },
-        backgroundColor: Colors.purple[400],
-        child: const Icon(Icons.add),
-      ),
-      body: const CardsLivros(),
-    );
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FormCadastroLivro()),
+            );
+          },
+          backgroundColor: Colors.purple[400],
+          child: const Icon(Icons.add),
+        ),
+        body: ListView(
+          children: const [
+            CardsLivros(),
+          ],
+        ));
   }
 }
 
@@ -180,9 +190,12 @@ class FormCadastroLivro extends StatelessWidget {
                     final String isbn = _isbnCtrl.text;
                     final String opiniao = _opiniaoCtrl.text;
                     final int anoPublicacao = int.parse(_anoCtrl.text);
-                    print(LivroController.persistirTemp(
-                        nome, isbn, opiniao, anoPublicacao));
-
+                    // print(LivroController.persistirTemp(
+                    //     nome, isbn, opiniao, anoPublicacao));
+                    Livro livroTemp = LivroController.persistirTemp(
+                        nome, isbn, opiniao, anoPublicacao);
+                    LivroController.adicionarLivro(livroTemp);
+                    print(LivroController.livros.getRange(0, 3));
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Livro gravado com sucesso!"),
