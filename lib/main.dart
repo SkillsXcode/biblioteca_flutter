@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:trabalho/controller/LivroController.dart';
 import 'package:trabalho/model/Livro.dart';
 
-const listaCards = List<CardsLivrosState>;
-
 void main() {
   runApp(const MyApp());
 }
@@ -14,9 +12,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List<Widget>? modelosPrincipais;
-    // modelosPrincipais?.add(const Biblioteca());
-    // modelosPrincipais?.add(const CardsLivros());
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "Biblioteca",
@@ -24,47 +19,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: const Biblioteca());
-  }
-}
-
-class CardsLivros extends StatefulWidget {
-  const CardsLivros({Key? key}) : super(key: key);
-
-  @override
-  State<CardsLivros> createState() => CardsLivrosState();
-}
-
-class CardsLivrosState extends State<CardsLivros> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const ListTile(
-              leading: Icon(Icons.book_rounded),
-              title: Text('Memórias Póstumas de Brás Cubas'),
-              subtitle: Text('658021001X'),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TextButton(
-                  child: const Text(
-                    'Remover',
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () {/* aciona o evento de remoção da fila */},
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
@@ -109,7 +63,7 @@ class AdicionarLivro extends State<InicioEstadoBiblioteca> {
           return ListTile(
               leading: const Icon(Icons.book),
               trailing: const Text(
-                "OK",
+                "\$",
                 style: TextStyle(color: Colors.green, fontSize: 15),
               ),
               title: Text(LivroController.livros.elementAt(index).nome));
@@ -232,6 +186,10 @@ class FormCadastroLivro extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Biblioteca()));
                 },
                 child: const Text("Voltar"),
               ),
@@ -256,6 +214,11 @@ exibirMensagemConfirmacao(BuildContext context) {
     onPressed: () {
       Navigator.pop(context);
       Navigator.pop(context);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const Biblioteca())); //estratégia para fugir do setState
     },
   );
   AlertDialog aviso = AlertDialog(
