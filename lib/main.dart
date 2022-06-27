@@ -93,21 +93,29 @@ class AdicionarLivro extends State<InicioEstadoBiblioteca> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FormCadastroLivro()),
-            );
-          },
-          backgroundColor: Colors.purple[400],
-          child: const Icon(Icons.add),
-        ),
-        body: ListView(
-          children: const [
-            CardsLivros(),
-          ],
-        ));
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FormCadastroLivro()),
+          );
+        },
+        backgroundColor: Colors.purple[400],
+        child: const Icon(Icons.add),
+      ),
+      body: ListView.builder(
+        itemCount: LivroController.livros.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+              leading: const Icon(Icons.book),
+              trailing: const Text(
+                "OK",
+                style: TextStyle(color: Colors.green, fontSize: 15),
+              ),
+              title: Text(LivroController.livros.elementAt(index).nome));
+        },
+      ),
+    );
   }
 }
 
@@ -195,7 +203,7 @@ class FormCadastroLivro extends StatelessWidget {
                     Livro livroTemp = LivroController.persistirTemp(
                         nome, isbn, opiniao, anoPublicacao);
                     LivroController.adicionarLivro(livroTemp);
-                    print(LivroController.livros.getRange(0, 3));
+                    //print(LivroController.livros.getRange(0, 3));
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Livro gravado com sucesso!"),
